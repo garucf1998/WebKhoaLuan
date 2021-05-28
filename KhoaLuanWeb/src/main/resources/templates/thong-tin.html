@@ -12,7 +12,7 @@
 	<link rel="stylesheet" href="/resources/demos/style.css">
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+	<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
 	<link href="" rel="stylesheet" type="text/css" th:href="@{/css/jquery-ui.css}">
 	<link href="" rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}">
 	<link href="" rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
@@ -33,50 +33,62 @@
 		</ul>
 		<div id="tabs-1" class="tab1">
 			<div class="container">
-
-				<form class="form" action="#" method="post">
+				<form th:action="@{/capnhat}" method="post" th:object="${benhnhan}">
 					<div class="d-grid gap-4" id="anhnens1">
 						<div class="row p-3 ">
-							<label for="inputEmail3" class="col m-0 p-2">Họ và Tên :</label>
-							<input type="text" class="col form-control" placeholder="Họ và Tên" id="hoVaTen">
-							<!--  <div class="col-sm-4">
-                              <img src="/images//user_edit.svg" 
-                                           th:attr="src=@{/images/user_edit.svg},title=#{logo},alt=#{logo}"  />
-                      </div>
-                  -->
-							<label for="inputEmail3" class="col m-0 p-2">Giới Tính :</label>
-							<input class="col form-control" id="gioiTinh">
+							<div class="col-md-6">
+								<label for="inputEmail3" class="col m-0 p-2 ">Họ và Tên
+									:</label> <input type="text" class="col form-control" placeholder="Họ và Tên"
+									id="hoVaTen" th:field="*{ten}">
+							</div>
+							<div class="col-md-6">
+								<label for="inputEmail3" class="col m-0 p-2">Giới Tính :</label>
+								<select class="form-control" name="gioiTinh">
+									<option value="true" th:field="*{gioiTinh}">Nam</option>
+									<option value="false" th:field="*{gioiTinh}">Nữ</option>
+								</select>
+							</div>
 						</div>
 						<div class="row p-3">
-							<label for="inputEmail3" class="col m-0 p-2">Địa Chỉ :</label>
-							<textarea rows="1" class="col form-control" id="diaChi" placeholder="Địa Chỉ"></textarea>
-							<label for="inputEmail3" class="col m-0 p-2">Ngày Sinh :</label>
-							<input type="text" placeholder="yyyy-mm-dd" class="col form-control" required="required"
-								id="ngaySinh" />
-						</div>
-						<div class="row p-3">
-							<label for="inputEmail3" class="col m-0 p-2">Email :</label> <input type="email"
-								class="col form-control" id="email" placeholder="Email" /> 
-								<label for="inputEmail3" style="color: #00fdfd;" class="col m-0 p-2">Số Điện Thoại :</label> 
-								<input type="text" class="col form-control" id="sdt"
-								placeholder="số điện thoại">
-						</div>
-						<div class="row p-3">
-							<label for="inputPassword3" class="col m-0 p-2">Tài khoản
-								:</label> <input type="text" readonly="true" class="col form-control" id="username"
-								placeholder="username">
+							<div class="col-md-6">
+								<label for="inputEmail3" class="col m-0 p-2">Địa Chỉ :</label>
+								<textarea rows="1" class="col form-control" id="diaChi" placeholder="Địa Chỉ"
+									th:field="*{diaChi}"></textarea>
+							</div>
+							<div class="col-md-6">
+								<label for="inputEmail3" class="col m-0 p-2">Chứng minh :</label>
+								<input type="text" placeholder="yyyy-mm-dd" class="col form-control" required="required"
+									name="cmnd" th:field="*{cmnd}"/>
+							</div>
 						</div>
 
-						<input id="ma" class="input" type="hidden" /><input id="ngayTao" class="input" type="hidden" />
-						<input id="enabled" class="input" type="hidden" />
-						<div class="row justify-content-between p-3">
-							<div class="col-4">
-								<button type="button" id="capnhatbn" class="btn btn-info form-control">Cập Nhật Thay
-									Đổi</button>
+						<div class="row p-3">
+							<div class="col-md-6">
+								<label for="inputEmail3" class="col m-0 p-2">Email :</label> <input type="email"
+									class="col form-control" id="email" placeholder="Email" th:field="*{email}" />
 							</div>
-							<div class="col-2">
-								<a th:href="@{/}" class="btn btn-info form-control">Trở Về
-									Trang Trủ</a>
+							<div class="col-md-6">
+								<label for="inputEmail3" class="col m-0 p-2">Số Điện
+									Thoại :</label> <input type="text" class="col form-control" id="sdt"
+									placeholder="số điện thoại" th:field="*{soDienThoai}">
+							</div>
+						</div>
+
+						<div class="row justify-content-between p-3">
+							<div class="col-md-6">
+
+								<div class="container-btn-login">
+									<button class="button-login" id="capnhatbn">Cập Nhật Thay Đổi</button>
+								</div>
+							</div>
+							<div class="col-md-6">
+
+
+								<div class="container-btn-login">
+
+									<a th:href="@{/}" class="button-login tag-a">Trở Về
+										Trang Trủ</a>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -89,15 +101,22 @@
 
 			</button>
 			<table class="table table-sm  table-bordered border-info styled-table" id="tableid">
-				<caption></caption>
+				
 				<thead style="text-align: center;">
 					<tr>
-
 						<th>Mã Lịch Hẹn</th>
 						<th>Thời gian</th>
 						<th>Triệu chứng</th>
 						<th>Ghi chú</th>
 						<th>Bác Sĩ</th>
+					</tr>
+					
+					<tr  th:each=" iter : ${lichHen}">   
+						<td th:utext="${iter.maLichHen}">Mã</td>
+            			<td th:utext="${iter.thoiGian}">Thời gian</td>
+						<td th:utext="${iter.trieuChung}">Triệu chứng</td>
+            			<td th:utext="${iter.ghiChu}">Ghi chú</td>
+					
 					</tr>
 				</thead>
 				<tbody id="bodylh">
@@ -125,45 +144,28 @@
 						<th>Ngày lập phiếu</th>
 						<th>Chuẩn đoán</th>
 						<th>Triệu chứng</th>
-
 						<th>Trạng thái</th>
-
-
 					</tr>
-
-
 				</thead>
 				<tbody id="bodyPhieuKham">
-
-
 				</tbody>
-
 			</table>
 
 			<table class="table table-sm  table-bordered border-info styled-table" id="tableThuocvaDichVu">
 				<caption></caption>
 				<thead style="text-align: center;">
 					<tr>
-
 						<th>Mã Thuốc</th>
 						<th>Tên Thuốc</th>
 						<th>Đơn giá</th>
 						<th>Đơn vị</th>
 					</tr>
-
-
 				</thead>
 				<tbody id="bodyThuocvaDichVu">
-
-
 				</tbody>
-
 			</table>
-
-
 		</div>
 	</div>
-
 </body>
 
 </html>

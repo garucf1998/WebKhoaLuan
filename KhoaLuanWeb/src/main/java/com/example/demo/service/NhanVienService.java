@@ -15,15 +15,14 @@ import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Repository;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
-
 import enity.BenhNhan;
 import enity.NhanVien;
 import enity.Role;
 import enity.TaiKhoan;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 @Repository
 public class NhanVienService {
 	

@@ -7,21 +7,25 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import enity.LichHen;
 import enity.Role;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 
 @Repository
 public class LichHenService {
 	
 	static String POST_LICH_HEN="http://localhost:5001/lichhen/insert";
 	static String GET_LICH_HEN_TRONG_NGAY="http://localhost:5001/lichhen/ktralichhenbn";
+	static String GET_ALL_LICH_HEN_BY_BN="http://localhost:5001/lichhen/getlichhenbybn";
 	
 	
 	/**
@@ -107,5 +111,45 @@ public class LichHenService {
 		}
 
 		return lh;
+	}
+	
+	public  List<LichHen>  GetAllLichHenByBenhNhan(Long id) throws IOException {
+		List<LichHen>getall=new ArrayList<>();
+	    URL urlForGetRequest = new URL(GET_ALL_LICH_HEN_BY_BN+"/"+id);
+	    String readLine = null;
+	    HttpURLConnection conection = (HttpURLConnection) urlForGetRequest.openConnection();
+	    conection.setRequestMethod("GET"); // set userId its a sample here
+	    conection.setRequestProperty("Content-Type", "application/json");
+	    int responseCode = conection.getResponseCode();
+
+	    if (responseCode == HttpURLConnection.HTTP_OK) {
+	        BufferedReader in = new BufferedReader(
+	            new InputStreamReader(conection.getInputStream()));
+	        String response = new String();
+	        while ((readLine = in .readLine()) != null) {
+	            response+=(readLine);
+	        } in .close();
+	        if(responseCode==200)
+	        {
+	        	Gson gson = new GsonBuilder()
+	        		    .setDateFormat("yyyy-MM-dd")
+	        		    .create();
+		        JsonParser parser = new JsonParser();
+		        JsonArray object = (JsonArray) parser.parse(response);// response will be the json String
+		        LichHen[] lichhenList = gson.fromJson(object, LichHen[].class);
+		        	
+		        for(int i=0;i<lichhenList.length;i++)
+		        	getall.add(lichhenList[i]);
+	        }
+	        else
+	        {
+	        	return null;
+	        }
+	        
+	    } else {
+	        System.out.println("GET NOT WORKED");
+	    }
+		return getall;
+
 	}
 }
