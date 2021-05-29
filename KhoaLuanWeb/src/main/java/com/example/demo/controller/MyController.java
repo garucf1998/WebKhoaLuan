@@ -35,13 +35,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.BenhNhanService;
+import com.example.demo.service.ChiTietDonThuocService;
 import com.example.demo.service.LichHenService;
 import com.example.demo.service.NhanVienService;
+import com.example.demo.service.PhieuKhamService;
 import com.example.demo.service.TaiKhoanService;
 
 import enity.BenhNhan;
+import enity.ChiTietDonThuoc;
 import enity.LichHen;
 import enity.NhanVien;
+import enity.PhieuKhambenh;
 import enity.TaiKhoan;
 
 @Controller
@@ -54,6 +58,10 @@ public class MyController {
 	NhanVienService nhanvienservice;
 	@Autowired
 	LichHenService lichhenservice;
+	@Autowired
+	PhieuKhamService phieukhamservice;
+	@Autowired
+	ChiTietDonThuocService chitietdonthuocservice;
 	@Autowired
 	public JavaMailSender javaMailSender;
 
@@ -125,7 +133,7 @@ public class MyController {
 			return "redirect:/doi-mat-khau";
 		}
 		redirectAttributes.addFlashAttribute("thanhcong", "Đổi mật khẩu thành công!-");
-		return "/logout";
+		return "redirect:/";
 	}
 
 	@GetMapping(value = "/dang-nhap")
@@ -164,7 +172,25 @@ public class MyController {
 		}
 		System.out.println("Tên :"+bn.getTen());
 		model.addAttribute("lichHen", lichHen);
+		
+		List<PhieuKhambenh> dsphieukham = new ArrayList<PhieuKhambenh>();
+		try {
+			dsphieukham= phieukhamservice.GetAllPhieuKhamByBenhNhanIDANDDate(bn.getId());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		model.addAttribute("dsphieukham", dsphieukham);
 
+		List<ChiTietDonThuoc> dschitiet = new ArrayList<ChiTietDonThuoc>();
+		try {
+			dschitiet = chitietdonthuocservice.GetAllChiTietDonThuocByBenhNhan(bn.getId());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		model.addAttribute("dschitiet", dschitiet);
 		return "thong-tin";
 
 	}
@@ -263,8 +289,7 @@ public class MyController {
 	}
 
 	@PostMapping("/dat-lich")
-	public String datLich(@ModelAttribute("lichHen") LichHen lichHen,
-			@RequestParam(value = "manhanvien", required = false) String manhanvien, Principal principal,
+	public String datLich(@ModelAttribute("lichHen") LichHen lichHen, Principal principal,
 			@RequestParam(value = "thoigiankham", required = false) String thoigiankham,
 			RedirectAttributes redirectAttributes) throws IOException {
 		TaiKhoan user = taikhoanservice.GetOneTaiKhoan(principal.getName());
@@ -273,8 +298,7 @@ public class MyController {
 		}
 		BenhNhan benhNhan = benhnhanservice.GetOneBenhNhanByUser(principal.getName());
 
-		NhanVien nhanVien = nhanvienservice.GetOneNhanVien((long) (Integer.parseInt(manhanvien)));
-		System.out.println("User name :" + nhanVien.getTen());
+		
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
 		try {
@@ -284,8 +308,8 @@ public class MyController {
 		}
 		LichHen lh = null;
 		lh = lichhenservice.GetLichHenBenhNhan(lichhenservice.doichuoitungay(date), benhNhan.getId());
-		lichHen.setBenhnhan(benhNhan);
-		lichHen.setNhanVien(nhanVien);
+		lichHen.setBenhNhan(benhNhan);
+		lichHen.setNhanvien(null);
 		lichHen.setThoiGian(date);
 		lichHen.setHinhThuc(true);
 		lichHen.setTrangThai("3");
@@ -313,9 +337,7 @@ public class MyController {
 							gioitinh = "Nữ";
 						content += "Giới tính : " + gioitinh + "<br>";
 						content += "Vào lúc : " + lichhenservice.doichuoitungay(lichHen.getThoiGian()) + "<br>";
-						if (nhanVien != null) {
-							content += "Với bác sỹ : " + nhanVien.getTen() + "<br>";
-						}
+						
 						content += "Vui lòng có mặt tại phòng khám để nhận được dịch vụ tốt nhất!" + "<br>";
 						content += "<br>";
 						content += "Cảm ơn bạn đã đặt lịch ở phòng khám chúng tôi.";

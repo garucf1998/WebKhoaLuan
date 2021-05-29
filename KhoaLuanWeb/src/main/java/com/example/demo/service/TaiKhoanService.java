@@ -90,7 +90,6 @@ public class TaiKhoanService {
 	}
 	public  int POSTRequest(TaiKhoan tk) throws IOException {
 		Gson gson = new Gson();
-		tk.setEnabled(true);
 		String POST_PARAMS = gson.toJson(tk);
 	    
 	    System.out.println(POST_PARAMS);
